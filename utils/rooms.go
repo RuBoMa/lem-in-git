@@ -9,10 +9,10 @@ import (
 
 // Room represents a room in the graph.
 type Room struct {
-	Name        string  // Name of the room
-	Connections []*Room // Connected rooms (edges in the graph)
-	IsStart     bool    // Whether this is the start room
-	IsEnd       bool    // Whether this is the end room
+	Name        string
+	Connections []*Room
+	IsStart     bool
+	IsEnd       bool
 }
 
 // AddConnection adds a connection to another room.
