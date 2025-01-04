@@ -8,52 +8,47 @@ import (
 )
 
 func main() {
+	// Ensure a file is provided
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run . <file_name>")
+		fmt.Println("Usage: go run . <example_file>")
 		os.Exit(1)
 	}
-
 	// Construct the file path
 	fileName := os.Args[1]
 	filePath := filepath.Join("examples/", fileName)
 
-	// Parse the rooms and connections
-	_, startRoom, endRoom, err := utils.ParseRooms(filePath)
+	// Parse the example file
+	numAnts, rooms, connections, startRoom, endRoom, err := utils.ParseExample(filePath)
 	if err != nil {
-		fmt.Println("Error parsing file:", err)
+		fmt.Printf("Error parsing file: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Validate start and end rooms
-	if startRoom == nil || endRoom == nil {
-		fmt.Println("Start or end room is missing.")
-		os.Exit(1)
+	// Print the example content (number of ants, rooms, and connections)
+	fmt.Println(numAnts)
+	for _, room := range rooms {
+		if room == startRoom {
+			fmt.Println("##start")
+		}
+		if room == endRoom {
+			fmt.Println("##end")
+		}
+		fmt.Printf("%s %d %d\n", room.Name, room.X, room.Y)
+	}
+	for _, conn := range connections {
+		fmt.Printf("%s-%s\n", conn.From, conn.To)
 	}
 
-	// Find and print the shortest path
-	path := utils.FindShortestPath(startRoom, endRoom)
+	// Find the shortest path
+	path := utils.FindShortestPath(startRoom, endRoom, connections)
 	if path == nil {
 		fmt.Println("No path found!")
 		os.Exit(1)
 	}
 
-	fmt.Println("Shortest path found:")
-	for _, room := range path {
-		fmt.Println(room.Name)
-	}
-	// Example: Initialize ants
-	ants := []*utils.Ant{
-		{ID: 1, Position: startRoom},
-		{ID: 2, Position: startRoom},
-		{ID: 3, Position: startRoom},
-	}
-
-	// 	// Move ants along the path
-	fmt.Println("Ant movements:")
-	for _, ant := range ants {
-		for _, step := range path[1:] { // Skip the start room
-			ant.MoveTo(step)
-			fmt.Printf("L%d-%s\n", ant.ID, ant.Position.Name)
-		}
+	// Print ant movements
+	movements := utils.CalculateAntMovements(numAnts, path)
+	for _, move := range movements {
+		fmt.Println(move)
 	}
 }

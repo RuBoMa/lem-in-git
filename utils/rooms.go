@@ -1,84 +1,40 @@
 package utils
 
 import (
-	"bufio"
-	"fmt"
-	"os"
+	"strconv"
 	"strings"
 )
 
 // Room represents a room in the graph.
 type Room struct {
 	Name        string
+	X, Y        int
 	Connections []*Room
 	IsStart     bool
 	IsEnd       bool
 }
 
-// AddConnection adds a connection to another room.
-func (r *Room) AddConnection(other *Room) {
-	r.Connections = append(r.Connections, other)
+type Connection struct {
+	From string
+	To   string
 }
 
-// ParseRooms parses rooms and connections from the example file.
-func ParseRooms(filePath string) (map[string]*Room, *Room, *Room, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("failed to open file: %v", err)
-	}
-	defer file.Close()
-
-	rooms := make(map[string]*Room)
-	var startRoom, endRoom *Room
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.HasPrefix(line, "##start") {
-			scanner.Scan()
-			startRoom = createRoom(scanner.Text(), true, false, rooms)
-		} else if strings.HasPrefix(line, "##end") {
-			scanner.Scan()
-			endRoom = createRoom(scanner.Text(), false, true, rooms)
-		} else if strings.Contains(line, "-") {
-			connectRooms(line, rooms)
-		} else if len(line) > 0 && line[0] != '#' {
-			createRoom(line, false, false, rooms)
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, nil, nil, fmt.Errorf("error reading file: %v", err)
-	}
-
-	return rooms, startRoom, endRoom, nil
-}
-
-// createRoom creates a room and adds it to the map.
-func createRoom(line string, isStart, isEnd bool, rooms map[string]*Room) *Room {
+// NewRoomFromLine parses a line to create a room.
+func NewRoomFromLine(line string) *Room {
 	parts := strings.Fields(line)
-	if len(parts) < 1 {
-		return nil // Invalid line
+	x, _ := strconv.Atoi(parts[1])
+	y, _ := strconv.Atoi(parts[2])
+	return &Room{
+		Name: parts[0],
+		X:    x,
+		Y:    y,
 	}
-	name := parts[0]
-	room := &Room{
-		Name:    name,
-		IsStart: isStart,
-		IsEnd:   isEnd,
-	}
-	rooms[name] = room
-	return room
 }
 
-// connectRooms creates a connection between two rooms.
-func connectRooms(line string, rooms map[string]*Room) {
-	parts := strings.Split(line, "-")
-	if len(parts) != 2 {
-		return
-	}
-	room1, room2 := rooms[parts[0]], rooms[parts[1]]
-	if room1 != nil && room2 != nil {
-		room1.AddConnection(room2)
-		room2.AddConnection(room1)
+// NewConnection creates a new connection between two rooms.
+func NewConnection(from, to string) *Connection {
+	return &Connection{
+		From: from,
+		To:   to,
 	}
 }

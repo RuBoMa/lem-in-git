@@ -1,33 +1,48 @@
 package utils
 
-import "container/list"
+func FindShortestPath(start, end *Room, connections []*Connection) []*Room {
+	// Create a graph adjacency list
+	graph := make(map[string][]string)
+	for _, conn := range connections {
+		graph[conn.From] = append(graph[conn.From], conn.To)
+		graph[conn.To] = append(graph[conn.To], conn.From)
+	}
 
-// FindShortestPath uses BFS to find the shortest path from start to end.
-func FindShortestPath(start, end *Room) []*Room {
-	visited := make(map[*Room]bool)
-	prev := make(map[*Room]*Room)
-	queue := list.New()
+	// BFS to find the shortest path
+	queue := [][]string{{start.Name}}
+	visited := make(map[string]bool)
+	visited[start.Name] = true
 
-	queue.PushBack(start)
-	visited[start] = true
+	for len(queue) > 0 {
+		// Dequeue the first path
+		path := queue[0]
+		queue = queue[1:]
 
-	// BFS loop
-	for queue.Len() > 0 {
-		current := queue.Remove(queue.Front()).(*Room)
-		if current == end {
-			return reconstructPath(prev, start, end)
+		// Get the last room in the current path
+		last := path[len(path)-1]
+
+		// If we've reached the end room, reconstruct the path
+		if last == end.Name {
+			var result []*Room
+			for _, roomName := range path {
+				result = append(result, &Room{Name: roomName})
+			}
+			return result
 		}
 
-		for _, neighbor := range current.Connections {
+		// Add neighbors to the queue
+		for _, neighbor := range graph[last] {
 			if !visited[neighbor] {
-				queue.PushBack(neighbor)
 				visited[neighbor] = true
-				prev[neighbor] = current
+				newPath := append([]string{}, path...)
+				newPath = append(newPath, neighbor)
+				queue = append(queue, newPath)
 			}
 		}
 	}
 
-	return nil // No path found
+	// If no path is found, return nil
+	return nil
 }
 
 // reconstructPath constructs the path from start to end using the prev map.
