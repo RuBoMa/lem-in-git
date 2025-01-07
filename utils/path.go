@@ -40,16 +40,6 @@ func FindShortestPath(start, end *Room, connections []*Connection) []*Room {
 			}
 		}
 	}
-
 	// If no path is found, return nil
 	return nil
 }
-
-// reconstructPath constructs the path from start to end using the prev map.
-// func reconstructPath(prev map[*Room]*Room, start, end *Room) []*Room {
-// 	var path []*Room
-// 	for at := end; at != nil; at = prev[at] {
-// 		path = append([]*Room{at}, path...)
-// 	}
-// 	return path
-// }

@@ -26,7 +26,7 @@ func CalculateAntMovements(numAnts int, path []*Room) []string {
 		for ant := 0; ant < numAnts; ant++ {
 			if antPositions[ant] < len(path) { // Ant still has room to move
 				stepMovements = append(stepMovements,
-					fmt.Sprintf("L%d-%s", ant+1, path[antPositions[ant]].Name))
+					fmt.Sprintf("Ant%d-Room%s", ant+1, path[antPositions[ant]].Name))
 				antPositions[ant]++ // Move the ant forward
 			}
 		}
