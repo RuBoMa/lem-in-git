@@ -22,9 +22,24 @@ func main() {
 	paths := findPaths(data.Tunnels, data.StartRoom, data.EndRoom)
 
 	// Print the paths
-	fmt.Println("All Paths:")
-	for i, path := range paths {
-		fmt.Printf("Path %d: %v\n", i+1, path)
+	// fmt.Println("All Paths:")
+	// for i, path := range paths {
+	// 	fmt.Printf("Path %d: %v\n", i+1, path)
+	// }
+
+	// Result to hold all non-crossing combinations
+	var result [][][]string
+
+	// Start finding combinations
+	findNonCrossingCombinations(paths, [][]string{}, 0, &result)
+
+	// Print all combinations
+	for i, combination := range result {
+		fmt.Printf("Combination %d:\n", i+1)
+		for _, path := range combination {
+			fmt.Println(path)
+		}
+		fmt.Println()
 	}
 
 	//fmt.Println(data.NumAnts)

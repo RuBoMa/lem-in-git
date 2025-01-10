@@ -43,3 +43,43 @@ func findPaths(graph map[string][]string, start, end string) [][]string {
 
 	return paths
 }
+
+// Function to check if two paths overlap (share rooms)
+func pathsOverlap(path1, path2 []string) bool {
+	rooms := make(map[string]bool)
+
+	// Add rooms from the first path to the map
+	for _, room := range path1[1 : len(path1)-1] { // Skip start and end
+		rooms[room] = true
+	}
+
+	// Check rooms in the second path
+	for _, room := range path2[1 : len(path2)-1] { // Skip start and end
+		if rooms[room] {
+			return true
+		}
+	}
+
+	return false
+}
+
+// Recursive function to generate all non-crossing path combinations
+func findNonCrossingCombinations(paths [][]string, currentCombination [][]string, index int, result *[][][]string) {
+	// Try adding more paths to the current combination
+	for i := index; i < len(paths); i++ {
+		overlaps := false
+		for _, existingPath := range currentCombination {
+			if pathsOverlap(existingPath, paths[i]) {
+				overlaps = true
+				break
+			}
+		}
+
+		if !overlaps {
+			// Add the path and recurse
+			newCombination := append(currentCombination, paths[i])
+			*result = append(*result, newCombination)
+			findNonCrossingCombinations(paths, newCombination, i+1, result)
+		}
+	}
+}
