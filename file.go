@@ -32,9 +32,4 @@ func fileContents(fileName string) {
 	// Saving the contents into a global variable
 	fileContent = lines
 
-	// Printing file contents
-	for _, line := range fileContent {
-		fmt.Println(line)
-	}
-
 }

@@ -33,6 +33,16 @@ func main() {
 	// Start finding combinations
 	findNonCrossingCombinations(paths, [][]string{}, 0, &result)
 
+	if result == nil {
+		fmt.Println("ERROR: invalid data format")
+		os.Exit(1)
+	}
+
+	// Printing file contents
+	// for _, line := range fileContent {
+	// 	fmt.Println(line)
+	// }
+
 	// Print all combinations
 	for i, combination := range result {
 		fmt.Printf("Combination %d:\n", i+1)
@@ -41,9 +51,4 @@ func main() {
 		}
 		fmt.Println()
 	}
-
-	//fmt.Println(data.NumAnts)
-	// fmt.Printf("Parsed Data:\nNumAnts: %d\nStart: %s\nEnd: %s\nRooms: %+v\nConnections: %+v\n",
-	// 	data.NumAnts, data.StartRoom, data.EndRoom, data.Rooms, data.Connections)
-
 }
