@@ -5,19 +5,6 @@ import (
 	"os"
 )
 
-// Room represents a room with its name and connections to other rooms
-type Rroom struct {
-	Name  string
-	Links []*Room
-}
-
-// Ant represents an ant moving through rooms
-type Ant struct {
-	ID   int
-	Path []*Room
-	Pos  int
-}
-
 func main() {
 
 	if len(os.Args) != 2 {
