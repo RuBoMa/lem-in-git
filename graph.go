@@ -2,7 +2,7 @@ package main
 
 import "sort"
 
-// Finds paths between rooms by using Distributed File System algorithm
+// Finds paths between rooms by using Depth First Search algorithm
 func findPaths(graph map[string][]string, start, end string) [][]string {
 	var paths [][]string
 	var currentPath []string
