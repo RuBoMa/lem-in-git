@@ -19,10 +19,11 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
 	assignedPath := assignAntsToPaths(paths, numAnts)
 
 	// Turn counter
-	turns := 1
+	turns := 0
 
 	// Simulation loop
 	for {
+		turns++
 		allFinished := true
 		tunnelInUse := make(map[string]bool) // Reset tunnel usage for each turn
 
@@ -68,16 +69,13 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
 			}
 		}
 
-		//fmt.Println()
-		turns++
-
 		// Break if all ants are finished
 		if allFinished {
 			break
 		}
 	}
 
-	return turns - 1
+	return turns
 }
 
 func indexOf(path []string, room string) int {
