@@ -83,3 +83,16 @@ func findNonCrossingCombinations(paths [][]string, currentCombination [][]string
 		}
 	}
 }
+
+func findShortestPath(graph map[string][]string, start, end string) ([]string, error) {
+	// Use the existing DFS function to find all paths
+	paths := findPaths(graph, start, end)
+
+	// Check if no paths exist
+	if len(paths) == 0 {
+		return nil, fmt.Errorf("no path found from %s to %s", start, end)
+	}
+
+	// The shortest path is the first in the sorted list
+	return paths[0], nil
+}

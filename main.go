@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	
 )
 
 func main() {
@@ -17,9 +18,17 @@ func main() {
 		fmt.Println("ERROR: invalid data format")
 		os.Exit(1)
 	}
+		// Find the shortest path from StartRoom to EndRoom
+		shortestPath, err := findShortestPath(data.Tunnels, data.StartRoom, data.EndRoom)
+		if err != nil {
+			fmt.Println("ERROR:", err)
+			os.Exit(1)
+		}
 
 	// Find all paths from StartRoom to EndRoom
 	paths := findPaths(data.Tunnels, data.StartRoom, data.EndRoom)
+		// Print the shortest path
+	fmt.Println("Shortest Path:", shortestPath)
 
 	// Print the paths
 	// fmt.Println("All Paths:")
