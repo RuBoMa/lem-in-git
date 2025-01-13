@@ -7,7 +7,8 @@ import (
 )
 
 type Ant struct {
-	ID         int    // Ant number
+	ID         int // Ant number
+	Name       int
 	Position   string // Current room
 	ReachedEnd bool
 }
@@ -27,6 +28,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 
 	// Slice to store movements
 	movements := []string{}
+	nextAntName := 1
 
 	// Simulation loop
 	for {
@@ -62,8 +64,13 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 					// Move the ant
 					ant.Position = nextRoom
 
+					if ant.Name == 0 {
+						ant.Name = nextAntName
+						nextAntName++
+					}
+
 					// Record the movement
-					turnMovements = append(turnMovements, fmt.Sprintf("L%d-%s", ant.ID, ant.Position))
+					turnMovements = append(turnMovements, fmt.Sprintf("L%d-%s", ant.Name, ant.Position))
 
 					// Print movement
 					//fmt.Printf("L%d - %s ", ant.ID, ant.Position)
