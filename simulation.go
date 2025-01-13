@@ -7,12 +7,13 @@ import (
 )
 
 type Ant struct {
-	ID         int // Ant number
+	ID         int
 	Name       int
-	Position   string // Current room
+	Position   string // Keeping track of the current room
 	ReachedEnd bool
 }
 
+// Simulating ant movements by minimal amount of turns for the given path combination
 func simulateAntMovement(paths [][]string, numAnts int, start, end string) []string {
 	// Initialize ants
 	ants := make([]Ant, numAnts)
@@ -23,22 +24,17 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 	// Assign ants to paths
 	assignedPath := assignAntsToPaths(paths, numAnts)
 
-	// Turn counter
-	//turns := 0
-
 	// Slice to store movements
 	movements := []string{}
 	nextAntName := 1
 
 	// Simulation loop
 	for {
-		//turns++
 		allFinished := true
 		tunnelInUse := make(map[string]bool) // Reset tunnel usage for each turn
 
 		turnMovements := []string{} // Store movements for this turn
 
-		//fmt.Printf("Turn %d:\n", turns)
 		for i := range ants {
 			ant := &ants[i]
 
@@ -49,11 +45,11 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 
 			// Get the path assigned to this ant
 			path := assignedPath[ant.ID]
-			currentIdx := indexOf(path, ant.Position)
+			currentRoom := indexOf(path, ant.Position)
 
 			// Determine the next room
-			if currentIdx+1 < len(path) {
-				nextRoom := path[currentIdx+1]
+			if currentRoom+1 < len(path) {
+				nextRoom := path[currentRoom+1]
 				tunnel := fmt.Sprintf("%s->%s", ant.Position, nextRoom)
 
 				// Move only if the tunnel is not in use
@@ -64,6 +60,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 					// Move the ant
 					ant.Position = nextRoom
 
+					// Giving the name for the ant in the order of moving
 					if ant.Name == 0 {
 						ant.Name = nextAntName
 						nextAntName++
@@ -71,9 +68,6 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 
 					// Record the movement
 					turnMovements = append(turnMovements, fmt.Sprintf("L%d-%s", ant.Name, ant.Position))
-
-					// Print movement
-					//fmt.Printf("L%d - %s ", ant.ID, ant.Position)
 
 					// Mark as finished if the ant reaches the end
 					if nextRoom == end {
@@ -88,6 +82,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 			}
 		}
 
+		// Add current turn movements to all movements struct
 		if len(turnMovements) > 0 {
 			movements = append(movements, fmt.Sprintf(strings.Join(turnMovements, " ")))
 		}
@@ -101,6 +96,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 	return movements
 }
 
+// Finding the index for the room on given path
 func indexOf(path []string, room string) int {
 	for i, r := range path {
 		if r == room {
@@ -110,30 +106,30 @@ func indexOf(path []string, room string) int {
 	return -1 // Shouldn't happen in valid scenarios
 }
 
+// Assigning paths to all ants based on the queue length
 func assignAntsToPaths(paths [][]string, numAnts int) map[int][]string {
 	// Initialize the assignedPath map
-	assignedPath := make(map[int][]string) // Ant name -> Path
+	assignedPath := make(map[int][]string) // Ant ID -> Path
 
 	// Track the number of ants assigned to each path
 	pathAntCounts := make([]int, len(paths))
 
 	// Assign ants to paths
-	for antName := 1; antName <= numAnts; antName++ {
-		bestPath := -1
-		minWeight := math.MaxInt // Max int value
-		//minWeight := int(^uint(0) >> 1) // Max int value
+	for antID := 1; antID <= numAnts; antID++ {
+		bestPath := -1           // Giving value outside of possible path index (assuming invalid scenario)
+		minLength := math.MaxInt // Max int value
 
 		for i, path := range paths {
-			weight := len(path) + pathAntCounts[i]
-			if weight < minWeight {
+			length := len(path) + pathAntCounts[i]
+			if length < minLength {
 				bestPath = i
-				minWeight = weight
+				minLength = length
 			}
 		}
 
 		// Assign the ant to the best path
 		pathAntCounts[bestPath]++
-		assignedPath[antName] = paths[bestPath]
+		assignedPath[antID] = paths[bestPath]
 	}
 
 	return assignedPath

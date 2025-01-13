@@ -3,7 +3,7 @@ package main
 import "sort"
 
 // Finds paths between rooms by using Depth First Search algorithm
-func findPaths(graph map[string][]string, start, end string) [][]string {
+func findPaths(links map[string][]string, start, end string) [][]string {
 	var paths [][]string
 	var currentPath []string
 	visited := make(map[string]bool)
@@ -22,7 +22,7 @@ func findPaths(graph map[string][]string, start, end string) [][]string {
 			paths = append(paths, pathCopy)
 		} else {
 			// Exploring all unvisited neighbors
-			for _, neighbor := range graph[room] {
+			for _, neighbor := range links[room] {
 				if !visited[neighbor] {
 					dfs(neighbor)
 				}
@@ -57,7 +57,7 @@ func pathsOverlap(path1, path2 []string) bool {
 	// Check rooms in the second path
 	for _, room := range path2[1 : len(path2)-1] { // Skip start and end
 		if rooms[room] {
-			return true
+			return true // If room already exists in the map, the paths are overlapping
 		}
 	}
 

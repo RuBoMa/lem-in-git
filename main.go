@@ -13,59 +13,59 @@ func main() {
 		os.Exit(1)
 	}
 
-	fileContents(os.Args[1])
-
-	data, err := parseInput()
+	// Adding file contents to a global variable
+	content, err := fileContents(os.Args[1])
 	if err != nil {
-		fmt.Println("ERROR: invalid data format")
+		fmt.Println("Error reading the file contents: ", err)
+		os.Exit(1)
+	}
+
+	// Parsing file contents into ParsedData struct
+	data, err := parseInput(content)
+	if err != nil {
+		fmt.Println("ERROR: invalid data format:", err)
 		os.Exit(1)
 	}
 
 	// Find all paths from StartRoom to EndRoom
 	paths := findPaths(data.Tunnels, data.StartRoom, data.EndRoom)
 
-	// Print the paths
-	// fmt.Println("All Paths:")
-	// for i, path := range paths {
-	// 	fmt.Printf("Path %d: %v\n", i+1, path)
-	// }
+	// Variable to hold all non-crossing combinations
+	var allCombinations [][][]string
 
-	// Result to hold all non-crossing combinations
-	var result [][][]string
+	// Recursively finding all non-crossing combinations
+	findNonCrossingCombinations(paths, [][]string{}, 0, &allCombinations)
 
-	// Start finding combinations
-	findNonCrossingCombinations(paths, [][]string{}, 0, &result)
-
-	if result == nil {
-		fmt.Println("ERROR: invalid data format")
+	if allCombinations == nil {
+		fmt.Println("ERROR: invalid data format, no valid combinations")
 		os.Exit(1)
 	}
 
 	// Printing file contents
-	for _, line := range fileContent {
+	for _, line := range content {
 		fmt.Println(line)
 	}
 	fmt.Println()
 
-	var combLength [][]string
+	var allSolutions [][]string
 
 	// Print all combinations
-	for _, combination := range result {
+	for _, combination := range allCombinations {
 		movements := simulateAntMovement(combination, data.NumAnts, data.StartRoom, data.EndRoom)
-		combLength = append(combLength, movements)
+		allSolutions = append(allSolutions, movements)
 	}
 
-	// Sorthing paths from shortest to longest
-	sort.Slice(combLength, func(i, j int) bool {
-		return len(combLength[i]) < len(combLength[j])
+	// Sorthing solutions from shortest to longest
+	sort.Slice(allSolutions, func(i, j int) bool {
+		return len(allSolutions[i]) < len(allSolutions[j])
 	})
 
-	for i, combinations := range combLength {
+	// Print the turns on the shortest solution
+	for i, solution := range allSolutions {
 		if i == 0 {
-			for _, turn := range combinations {
+			for _, turn := range solution {
 				fmt.Println(turn)
 			}
 		}
-
 	}
 }
