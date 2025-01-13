@@ -1,14 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"strings"
+)
 
 type Ant struct {
-	ID       int    // Ant number
-	Position string // Current room
-	Done     bool
+	ID         int    // Ant number
+	Position   string // Current room
+	ReachedEnd bool
 }
 
-func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
+func simulateAntMovement(paths [][]string, numAnts int, start, end string) []string {
 	// Initialize ants
 	ants := make([]Ant, numAnts)
 	for i := 0; i < numAnts; i++ {
@@ -19,20 +23,25 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
 	assignedPath := assignAntsToPaths(paths, numAnts)
 
 	// Turn counter
-	turns := 0
+	//turns := 0
+
+	// Slice to store movements
+	movements := []string{}
 
 	// Simulation loop
 	for {
-		turns++
+		//turns++
 		allFinished := true
 		tunnelInUse := make(map[string]bool) // Reset tunnel usage for each turn
+
+		turnMovements := []string{} // Store movements for this turn
 
 		//fmt.Printf("Turn %d:\n", turns)
 		for i := range ants {
 			ant := &ants[i]
 
 			// Skip if the ant has already reached the end
-			if ant.Done {
+			if ant.ReachedEnd {
 				continue
 			}
 
@@ -53,20 +62,27 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
 					// Move the ant
 					ant.Position = nextRoom
 
+					// Record the movement
+					turnMovements = append(turnMovements, fmt.Sprintf("L%d-%s", ant.ID, ant.Position))
+
 					// Print movement
 					//fmt.Printf("L%d - %s ", ant.ID, ant.Position)
 
 					// Mark as finished if the ant reaches the end
 					if nextRoom == end {
-						ant.Done = true
+						ant.ReachedEnd = true
 					}
 				}
 			}
 
 			// Check if all ants are finished
-			if !ant.Done {
+			if !ant.ReachedEnd {
 				allFinished = false
 			}
+		}
+
+		if len(turnMovements) > 0 {
+			movements = append(movements, fmt.Sprintf(strings.Join(turnMovements, " ")))
 		}
 
 		// Break if all ants are finished
@@ -75,7 +91,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) int {
 		}
 	}
 
-	return turns
+	return movements
 }
 
 func indexOf(path []string, room string) int {
@@ -88,16 +104,17 @@ func indexOf(path []string, room string) int {
 }
 
 func assignAntsToPaths(paths [][]string, numAnts int) map[int][]string {
-	// Step 1: Initialize the assignedPath map
-	assignedPath := make(map[int][]string) // Ant ID -> Path
+	// Initialize the assignedPath map
+	assignedPath := make(map[int][]string) // Ant name -> Path
 
-	// Step 2: Track the number of ants assigned to each path
+	// Track the number of ants assigned to each path
 	pathAntCounts := make([]int, len(paths))
 
-	// Step 3: Assign ants to paths
-	for antID := 1; antID <= numAnts; antID++ {
+	// Assign ants to paths
+	for antName := 1; antName <= numAnts; antName++ {
 		bestPath := -1
-		minWeight := int(^uint(0) >> 1) // Max int value
+		minWeight := math.MaxInt // Max int value
+		//minWeight := int(^uint(0) >> 1) // Max int value
 
 		for i, path := range paths {
 			weight := len(path) + pathAntCounts[i]
@@ -109,7 +126,7 @@ func assignAntsToPaths(paths [][]string, numAnts int) map[int][]string {
 
 		// Assign the ant to the best path
 		pathAntCounts[bestPath]++
-		assignedPath[antID] = paths[bestPath]
+		assignedPath[antName] = paths[bestPath]
 	}
 
 	return assignedPath

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 )
 
 func main() {
@@ -41,13 +42,30 @@ func main() {
 	}
 
 	// Printing file contents
-	// for _, line := range fileContent {
-	// 	fmt.Println(line)
-	// }
+	for _, line := range fileContent {
+		fmt.Println(line)
+	}
+	fmt.Println()
+
+	var combLength [][]string
 
 	// Print all combinations
 	for _, combination := range result {
-		turns := simulateAntMovement(combination, data.NumAnts, data.StartRoom, data.EndRoom)
-		fmt.Printf("Combination %v requires %d turns\n", combination, turns)
+		movements := simulateAntMovement(combination, data.NumAnts, data.StartRoom, data.EndRoom)
+		combLength = append(combLength, movements)
+	}
+
+	// Sorthing paths from shortest to longest
+	sort.Slice(combLength, func(i, j int) bool {
+		return len(combLength[i]) < len(combLength[j])
+	})
+
+	for i, combinations := range combLength {
+		if i == 0 {
+			for _, turn := range combinations {
+				fmt.Println(turn)
+			}
+		}
+
 	}
 }
