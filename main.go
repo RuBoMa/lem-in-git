@@ -11,7 +11,9 @@ func main() {
 		fmt.Println("Usage: 'go run . [filename]'")
 		os.Exit(1)
 	}
+
 	fileContents(os.Args[1])
+
 	data, err := parseInput()
 	if err != nil {
 		fmt.Println("ERROR: invalid data format")
@@ -44,11 +46,8 @@ func main() {
 	// }
 
 	// Print all combinations
-	for i, combination := range result {
-		fmt.Printf("Combination %d:\n", i+1)
-		for _, path := range combination {
-			fmt.Println(path)
-		}
-		fmt.Println()
+	for _, combination := range result {
+		turns := simulateAntMovement(combination, data.NumAnts, data.StartRoom, data.EndRoom)
+		fmt.Printf("Combination %v requires %d turns\n", combination, turns)
 	}
 }

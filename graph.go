@@ -8,7 +8,7 @@ func findPaths(graph map[string][]string, start, end string) [][]string {
 	var currentPath []string
 	visited := make(map[string]bool)
 
-	// Helper function for DFS
+	// Recursive function to find all possible paths
 	var dfs func(room string)
 	dfs = func(room string) {
 		// Adding the current room to the path and mark it as visited
@@ -37,6 +37,7 @@ func findPaths(graph map[string][]string, start, end string) [][]string {
 	// Staring DFS from the start room
 	dfs(start)
 
+	// Sorthing paths from shortest to longest
 	sort.Slice(paths, func(i, j int) bool {
 		return len(paths[i]) < len(paths[j])
 	})
