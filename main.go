@@ -9,22 +9,19 @@ import (
 func main() {
 
 	if len(os.Args) != 2 {
-		fmt.Println("Usage: 'go run . [filename]'")
-		os.Exit(1)
+		Exit(fmt.Sprintf("Usage: 'go run . [filename]'"))
 	}
 
 	// Adding file contents to a global variable
 	content, err := fileContents(os.Args[1])
 	if err != nil {
-		fmt.Println("Error reading the file contents: ", err)
-		os.Exit(1)
+		Exit(fmt.Sprint("Error reading the file contents: ", err))
 	}
 
 	// Parsing file contents into ParsedData struct
 	data, err := parseInput(content)
 	if err != nil {
-		fmt.Println("ERROR: invalid data format:", err)
-		os.Exit(1)
+		Exit(fmt.Sprint("ERROR: invalid data format: ", err))
 	}
 
 	// Find all paths from StartRoom to EndRoom
@@ -37,15 +34,8 @@ func main() {
 	findNonCrossingCombinations(paths, [][]string{}, 0, &allCombinations)
 
 	if allCombinations == nil {
-		fmt.Println("ERROR: invalid data format, no valid combinations")
-		os.Exit(1)
+		Exit(fmt.Sprint("ERROR: invalid data format: no valid combinations"))
 	}
-
-	// Printing file contents
-	for _, line := range content {
-		fmt.Println(line)
-	}
-	fmt.Println()
 
 	var allSolutions [][]string
 
@@ -60,12 +50,25 @@ func main() {
 		return len(allSolutions[i]) < len(allSolutions[j])
 	})
 
-	// Print the turns on the shortest solution
-	for i, solution := range allSolutions {
-		if i == 0 {
-			for _, turn := range solution {
-				fmt.Println(turn)
-			}
-		}
+	PrintResult(content, allSolutions[0])
+}
+
+// Print exit message and exit program
+func Exit(msg string) {
+	fmt.Println(msg)
+	os.Exit(1)
+}
+
+// Print file contents and the turns on the shortest path combination
+func PrintResult(content, solution []string) {
+	// Printing file contents
+	for _, line := range content {
+		fmt.Println(line)
+	}
+	fmt.Println()
+
+	// Print the turns
+	for _, turn := range solution {
+		fmt.Println(turn)
 	}
 }

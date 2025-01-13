@@ -28,14 +28,10 @@ func parseInput(fileContent []string) (*ParsedData, error) {
 		Tunnels: make(map[string][]string),
 	}
 
-	if len(fileContent) == 0 {
-		return nil, fmt.Errorf("input is empty")
-	}
-
 	// Getting the number of ants
 	numAnts, err := strconv.Atoi(fileContent[0])
 	if err != nil || numAnts == 0 {
-		return nil, fmt.Errorf("invalid number of ants (%v)", fileContent[0])
+		return nil, fmt.Errorf("invalid number of ants '%v'", fileContent[0])
 	}
 	parsedData.NumAnts = numAnts
 
@@ -89,6 +85,7 @@ func parseInput(fileContent []string) (*ParsedData, error) {
 		}
 	}
 
+	// Checking if the star or end room is missing
 	if parsedData.StartRoom == "" {
 		return nil, fmt.Errorf("star room not defined")
 	}

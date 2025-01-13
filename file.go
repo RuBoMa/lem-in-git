@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -16,12 +17,16 @@ func fileContents(fileName string) ([]string, error) {
 
 	// Reading the file line by line
 	var fileContent []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		fileContent = append(fileContent, scanner.Text())
+	line := bufio.NewScanner(file)
+	for line.Scan() {
+		fileContent = append(fileContent, line.Text())
 	}
-	if err := scanner.Err(); err != nil {
+	if err := line.Err(); err != nil {
 		return nil, err
+	}
+
+	if len(fileContent) == 0 {
+		return nil, fmt.Errorf("file is empty")
 	}
 
 	return fileContent, nil
