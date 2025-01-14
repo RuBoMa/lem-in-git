@@ -68,7 +68,8 @@ func PrintResult(content, solution []string) {
 	fmt.Println()
 
 	// Print the turns
-	for _, turn := range solution {
-		fmt.Println(turn)
+	for i, turn := range solution {
+
+		fmt.Printf("Turn %d: %v\n", i+1, turn)
 	}
 }
