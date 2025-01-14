@@ -1,7 +1,5 @@
 package main
 
-import "sort"
-
 // Finds paths between rooms by using Depth First Search algorithm
 func findPaths(links map[string][]string, start, end string) [][]string {
 	var paths [][]string
@@ -21,10 +19,10 @@ func findPaths(links map[string][]string, start, end string) [][]string {
 			copy(pathCopy, currentPath)
 			paths = append(paths, pathCopy)
 		} else {
-			// Exploring all unvisited neighbors
-			for _, neighbor := range links[room] {
-				if !visited[neighbor] {
-					dfs(neighbor)
+			// Exploring all unvisited linkedRooms
+			for _, linkedRoom := range links[room] {
+				if !visited[linkedRoom] {
+					dfs(linkedRoom)
 				}
 			}
 		}
@@ -36,11 +34,6 @@ func findPaths(links map[string][]string, start, end string) [][]string {
 
 	// Staring DFS from the start room
 	dfs(start)
-
-	// Sorthing paths from shortest to longest
-	sort.Slice(paths, func(i, j int) bool {
-		return len(paths[i]) < len(paths[j])
-	})
 
 	return paths
 }
