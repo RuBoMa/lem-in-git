@@ -21,21 +21,17 @@ type ParsedData struct {
 }
 
 // Parses global variable fileContent as per structs and returns the data
-func parseInput() (*ParsedData, error) {
+func parseInput(fileContent []string) (*ParsedData, error) {
 	// creating dynamic data
 	parsedData := &ParsedData{
 		Rooms:   make(map[string]Room),
 		Tunnels: make(map[string][]string),
 	}
 
-	if len(fileContent) == 0 {
-		return nil, fmt.Errorf("input is empty")
-	}
-
 	// Getting the number of ants
 	numAnts, err := strconv.Atoi(fileContent[0])
 	if err != nil || numAnts == 0 {
-		return nil, fmt.Errorf("invalid number of ants")
+		return nil, fmt.Errorf("invalid number of ants '%v'", fileContent[0])
 	}
 	parsedData.NumAnts = numAnts
 
@@ -57,7 +53,7 @@ func parseInput() (*ParsedData, error) {
 		if len(parts) == 3 {
 			name := parts[0]
 			if name[0] == 'L' || name[0] == '#' { // Name cannot start with a L or #
-				return nil, fmt.Errorf("invalid name")
+				return nil, fmt.Errorf("invalid room name")
 			}
 			x, err1 := strconv.Atoi(parts[1])
 			y, err2 := strconv.Atoi(parts[2])
@@ -87,6 +83,14 @@ func parseInput() (*ParsedData, error) {
 			parsedData.Tunnels[room1] = append(parsedData.Tunnels[room1], room2) // adding the connection on both tunnel maps
 			parsedData.Tunnels[room2] = append(parsedData.Tunnels[room2], room1)
 		}
+	}
+
+	// Checking if the star or end room is missing
+	if parsedData.StartRoom == "" {
+		return nil, fmt.Errorf("star room not defined")
+	}
+	if parsedData.EndRoom == "" {
+		return nil, fmt.Errorf("end room not defined")
 	}
 
 	return parsedData, nil
