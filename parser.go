@@ -64,9 +64,15 @@ func parseInput(fileContent []string) (*ParsedData, error) {
 			parsedData.Rooms[name] = room        // adding the room to the map
 
 			if isStart {
+				if parsedData.StartRoom != "" {
+					return nil, fmt.Errorf("several start rooms defined")
+				}
 				parsedData.StartRoom = name
 				isStart = false
 			} else if isEnd {
+				if parsedData.EndRoom != "" {
+					return nil, fmt.Errorf("several end rooms defined")
+				}
 				parsedData.EndRoom = name
 				isEnd = false
 			}
