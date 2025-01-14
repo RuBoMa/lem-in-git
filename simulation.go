@@ -50,6 +50,9 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 			// Get the path assigned to this ant
 			path := assignedPath[ant.ID]
 			currentIdx := indexOf(path, ant.Position)
+			if currentIdx == -1 {
+				return nil
+			}
 
 			// Determine the next room
 			if currentIdx+1 < len(path) {
@@ -89,7 +92,7 @@ func simulateAntMovement(paths [][]string, numAnts int, start, end string) []str
 		}
 
 		if len(turnMovements) > 0 {
-			movements = append(movements, fmt.Sprintf(strings.Join(turnMovements, " ")))
+			movements = append(movements, strings.Join(turnMovements, " "))
 		}
 
 		// Break if all ants are finished
